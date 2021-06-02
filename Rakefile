@@ -1,8 +1,17 @@
+require 'rake/testtask'
+require 'rake/clean'
+
+namespace :ext do
+  load 'ext/mimemagic/Rakefile'
+end
+CLOBBER.include("lib/mimemagic/path.rb")
+
 task :default => %w(test)
 
-desc 'Run tests with bacon'
-task :test => FileList['test/*_test.rb'] do |t|
-  sh "bacon -q -Ilib:test #{t.prerequisites.join(' ')}"
+desc 'Run tests with minitest'
+Rake::TestTask.new("test" => "ext:default") do |t|
+  t.libs << 'test'
+  t.pattern = 'test/*_test.rb'
 end
 
 desc 'Generate mime tables'
